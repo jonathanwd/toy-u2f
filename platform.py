@@ -36,25 +36,24 @@ class Platform:
     def ask_authenticator_make_credential(self):
         data = {
             1: b"\x68\x71\x34\x96\x82\x22\xec\x17\x20\x2e\x42\x50\x5f\x8e\xd2\xb1\x6a\xe2\x2f\x16\xbb\x05\xb8\x8c\x25\xdb\x9e\x60\x26\x45\xf1\x41",
-            2: {
-                "id": "example.com",
-                "name": "Acme"
-            },
-            3: {
-                "id": b"\x30\x82\x01\x93\x30\x82\x01\x38\xa0\x03\x02\x01\x02\x30\x82\x01\x93\x30\x82\x01\x38\xa0\x03\x02\x01\x02\x30\x82\x01\x93\x30\x82",
-                "icon": "https://pics.example.com/00/p/aBjjjpqPb.png",
-                "name":  "johnpsmith@example.com",
-                "displayName": "John P. Smith"
-            },
+            2: OrderedDict([
+                ("id", "example.com"),
+                ("name", "Acme")]),
+            3: OrderedDict([
+                ("id", b"\x30\x82\x01\x93\x30\x82\x01\x38\xa0\x03\x02\x01\x02\x30\x82\x01\x93\x30\x82\x01\x38\xa0\x03\x02\x01\x02\x30\x82\x01\x93\x30\x82"),
+                ("icon", "https://pics.example.com/00/p/aBjjjpqPb.png"),
+                ("name",  "johnpsmith@example.com"),
+                ("displayName", "John P. Smith")
+            ]),
             4: [
-                {
-                    "alg": -7,
-                    "type": "public-key"
-                },
-                {
-                    "alg": -257,
-                    "type": "public-key"
-                }
+                OrderedDict([
+                    ("alg", -7),
+                    ("type", "public-key")
+                ]),
+                OrderedDict([
+                    ("alg", -257),
+                    ("type", "public-key")
+                ])
             ],
             7: {
                 "rk": True

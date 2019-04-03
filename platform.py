@@ -16,5 +16,18 @@ class Platform:
     def send(self, msg):
         self.sock.sendall(msg.encode())
 
+    def receive(self):
+        response = ''
+        while True:
+            response = response + self.sock.recv(1024).decode()
+            break
+        print(response)
+        return response
+        
+
     def disconnect(self):
         self.sock.close()  
+    
+    def getAuthenticatorInfo(self):
+        self.send('authenticatorGetInfo')
+        self.receive()

@@ -29,6 +29,18 @@ class Platform:
     def disconnect(self):
         self.sock.close()  
     
+    # def collect_client_data(self):
+    #     CollectedClientData = {
+    #         "type": "webauthn.create",
+    #         "challenge": "challenge data",
+    #         "origin": "example.com",
+    #         "tokenBinding":{
+    #             "status": "present",
+    #             'id': 1234
+    #         }
+    #     }
+    #     return CollectedClientData
+
     def get_authenticator_info(self):
         self.send(b'\x08\x02')
         self.receive()
@@ -61,3 +73,4 @@ class Platform:
         }
         request = b'\x01' + dumps(data)
         print(request.hex())
+        self.send(request)

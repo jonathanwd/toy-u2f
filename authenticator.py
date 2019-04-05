@@ -62,7 +62,8 @@ class Authenticator:
         if approve == 'y':
             print("Approved")
             algorithm = p["credTypesAndPubKeyAlgs"][0]["alg"]
-            return ccrypto.generate_credential(algorithm)
+            result = ccrypto.generate_credential(algorithm, p['rpEntity'], p['userEntity'])
+            return str(result)
         else:
             return "NotAllowedError"
 

@@ -1,7 +1,6 @@
-from platform1 import Platform
+from browser import Platform
 
 p = Platform()
-p.connect('127.0.1.1', 23456)
-p.ask_authenticator_make_credential()
-p.receive_attestation()
+p.connect()
+p.register_u2f("example.com")
 p.disconnect()

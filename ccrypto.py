@@ -29,9 +29,25 @@ def generate_mac(appID, key):
 def sign(key, toSign):
     signer = DSS.new(key, 'fips-186-3')
     h = SHA256.new(str(toSign).encode())
+    print(str(toSign))
+    print(h.hexdigest())
     signature = signer.sign(h)
     return signature
     
+def verify(publicKey, signature, toSign):
+    key = ECC.import_key(publicKey)
+    h = SHA256.new(str(toSign).encode())
+    print(str(toSign))
+    print(h.hexdigest())
+    verifier = DSS.new(key, 'fips-186-3')
+    try:
+        verifier.verify(h, signature)
+        print("The message is authentic.")
+        return True
+    except ValueError:
+        print("The message is not authentic.")
+        return False
+
     # credential = {}
     # key = None
     # nonce = Crypto.Random.random.getrandbits(64)
@@ -60,16 +76,16 @@ def sign(key, toSign):
     # print(attestation['app_id_sig'])
     # return str(attestation).replace("'",'"')
 
-def verify(publicKey, signature, appID):
-    signature = base64.b64decode(signature)
-    key = ECC.import_key(publicKey)
-    h = SHA256.new(appID.encode())
-    verifier = DSS.new(key, 'fips-186-3')
-    try:
-        verifier.verify(h, signature)
-        print("The message is authentic.")
-    except ValueError:
-        print("The message is not authentic.")
+# def verify(publicKey, signature, appID):
+#     signature = base64.b64decode(signature)
+#     key = ECC.import_key(publicKey)
+#     h = SHA256.new(appID.encode())
+#     verifier = DSS.new(key, 'fips-186-3')
+#     try:
+#         verifier.verify(h, signature)
+#         print("The message is authentic.")
+#     except ValueError:
+#         print("The message is not authentic.")
 
 # test = (-1, {"id": "example.com", "name": "Jessica"}, {"id": "User ID", "name": "jessica@example.com", "displayName": "Jessica Smith"})
 # print(generate_credential(-7, {"id": "example.com", "name": "Jessica"}, {"id": "User ID", "name": "jessica@example.com", "displayName": "Jessica Smith"}))

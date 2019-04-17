@@ -2,6 +2,7 @@ import socket
 import ccrypto
 from Server import Server
 from cbor2 import dumps, loads
+from collections import OrderedDict 
 
 class Authenticator(Server):
     def __init__(self):
@@ -27,20 +28,20 @@ class Authenticator(Server):
         #     return "NotAllowedError"
         key, nonce = ccrypto.generate_credential(appID)
         mac = ccrypto.generate_mac(appID, key)
-        publicKey = key.public_key()
+        publicKey = key.public_key().export_key(format='PEM')
         keyHandle = {
             'nonce': nonce,
             'mac': mac
         }
-        toSign = {
-            'appID': appID,
-            'challenge': challenge,
-            'publicKey': publicKey,
-            'keyHandle': keyHandle
-        }
+        toSign = OrderedDict([
+            ('appID', appID),
+            ('challenge', challenge),
+            ('publicKey', publicKey),
+            ('keyHandle', keyHandle)
+        ])
         signature = ccrypto.sign(key, toSign)
         response['keyHandle'] = keyHandle
-        response['publicKey'] = publicKey.export_key(format='PEM')
+        response['publicKey'] = publicKey
         response['signature'] = signature
         return response
 

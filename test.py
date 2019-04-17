@@ -1,6 +1,5 @@
-from browser import Platform
+from browser import Browser
 
-p = Platform()
-# p.connect()
-p.register_u2f("example.com")
-# p.disconnect()
+b = Browser()
+b.register_u2f("steve", "not_secure", "example.com")
+b.authenticate_u2f("steve", "not_secure", "example.com")

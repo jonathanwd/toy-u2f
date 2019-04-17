@@ -4,7 +4,7 @@ import ccrypto
 from cbor2 import dumps, loads
 from collections import OrderedDict 
 
-class Platform:
+class Browser:
     def __init__(self):
         self.authenticator_address = ('127.0.1.1', 23456)
         self.relying_party_address = ('127.0.1.1', 23457)
@@ -24,10 +24,10 @@ class Platform:
         print(response)
         return response  
 
-    def register_u2f(self, website):
+    def register_u2f(self, username, password, website):
         user_pass = {
-            "username": "steve", 
-            "password": "not_secure"
+            "username": username, 
+            "password": password
         }
         response = self.send_request(self.relying_party_address, user_pass, "party_request_registration")
         appID = response['appID']
@@ -37,3 +37,17 @@ class Platform:
             print("appID verified")
         credential = self.send_request(self.authenticator_address, response, "authenticator_make_credential")
         self.send_request(self.relying_party_address, credential, "party_store_credential")
+
+    def authenticate_u2f(self, username, password, website):
+        user_pass = {
+            "username": username, 
+            "password": password
+        }
+        response = self.send_request(self.relying_party_address, user_pass, "party_request_authentication")
+        appID = response['appID']
+        if appID != website:         # Verify appID
+            print("appID does not match requested website")
+        else:
+            print("appID verified")
+        auth_sig = self.send_request(self.authenticator_address, response, "authenticator_authenticate")
+        self.send_request(self.relying_party_address, auth_sig, "party_check_authentication")

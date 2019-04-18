@@ -24,14 +24,14 @@ class Authenticator(Server):
             return False
 
     def authenticator_make_credential(self, params):
-        response ={}
+        response = {}
         appID = params['appID']
         challenge = params['challenge']
         print("Request received to make new credential with the following data:")
         print("\tappID: ", appID)
         print("\tchallenge: ", challenge)
         if not self.test_user_presence():
-            return response
+            return {'Error': 'User presense failed'}
         key, nonce = ccrypto.new_credential(appID)
         mac = ccrypto.generate_mac(appID, key)
         publicKey = key.public_key().export_key(format='PEM')
@@ -60,7 +60,7 @@ class Authenticator(Server):
         print("\tappID: ", appID)
         print("\tchallenge: ", challenge)
         if not self.test_user_presence():
-            return response
+            return {'Error': 'User presense failed'}
         key = ccrypto.credential_from_nonce(appID, keyHandle['nonce'])
         mac = ccrypto.generate_mac(appID, key)
         if mac != keyHandle['mac']:

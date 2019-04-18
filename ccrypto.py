@@ -33,16 +33,12 @@ def generate_mac(appID, key):
 def sign(key, toSign):
     signer = DSS.new(key, 'fips-186-3')
     h = SHA256.new(str(toSign).encode())
-    print(str(toSign))
-    print(h.hexdigest())
     signature = signer.sign(h)
     return signature
     
 def verify(publicKey, signature, toSign):
     key = ECC.import_key(publicKey)
     h = SHA256.new(str(toSign).encode())
-    print(str(toSign))
-    print(h.hexdigest())
     verifier = DSS.new(key, 'fips-186-3')
     try:
         verifier.verify(h, signature)

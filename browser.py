@@ -28,12 +28,16 @@ class Browser:
             "password": password
         }
         response = self.send_request(address, user_pass, "party_request_registration")
+        if "Error" in response:
+            return response
         appID = response['appID']
         if appID != website:         # Verify appID
-            print("appID does not match requested website")
+            return{"Error": "appID does not match requested website"}
         else:
             print("appID verified")
         credential = self.send_request(self.authenticator_address, response, "authenticator_make_credential")
+        if "Error" in credential:
+            return credential
         return self.send_request(address, credential, "party_store_credential")
 
     def authenticate_u2f(self, website, username, password, address):
@@ -42,12 +46,16 @@ class Browser:
             "password": password
         }
         response = self.send_request(address, user_pass, "party_request_authentication")
+        if "Error" in response:
+            return response
         appID = response['appID']
         if appID != website:         # Verify appID
-            print("appID does not match requested website")
+            return{"Error": "appID does not match requested website"}
         else:
             print("appID verified")
         auth_sig = self.send_request(self.authenticator_address, response, "authenticator_authenticate")
+        if "Error" in auth_sig:
+            return auth_sig
         return self.send_request(address, auth_sig, "party_check_authentication")
 
     def sign_up(self, website, username, password, address):

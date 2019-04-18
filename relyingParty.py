@@ -26,7 +26,7 @@ class RelyingParty(Server):
         username = params['username']
         password = params['password']
         if username in self.users:
-            return {'response': 'User already exists'}
+            return {'Error': 'User already exists'}
         else:
             info = {"password": password}
             self.users[username] = info
@@ -36,18 +36,20 @@ class RelyingParty(Server):
     def request_registration(self, params):
         username = params['username']
         password = params['password']
-        response = {}
+        response = {'Error': 'Bad username/password'}
         if username in self.users:
             if password == self.users[username]['password']:
                 self.current_challenge = random.randint(1,1000)
                 appID = self.webname
-                response['challenge'] = self.current_challenge
-                response['appID'] = appID
+                response = {
+                    'challenge': self.current_challenge,
+                    'appID': appID
+                }
                 self.current_user = username
         return response
 
     def store_credential(self, params):
-        response = {'response': 'Signature unverified'}
+        response = {'Error': 'Signature unverified'}
         signature = params['signature']
         keyHandle = params['keyHandle']
         publicKey = params['publicKey']
@@ -72,20 +74,22 @@ class RelyingParty(Server):
     def request_authentication(self, params):
         username = params['username']
         password = params['password']
-        response = {}
+        response = {'Error': 'Username/password unregistered'}
         if username in self.users:
-            if password == self.users[username]['password']:
+            if password == self.users[username]['password'] and 'u2f' in self.users[username]:
                 self.current_challenge = random.randint(1,1000)
                 appID = self.webname
                 keyHandle = self.users[username]['u2f']['keyHandle']
-                response['challenge'] = self.current_challenge
-                response['appID'] = appID
-                response['keyHandle'] = keyHandle
+                response = {
+                    'challenge': self.current_challenge,
+                    'appID': appID,
+                    'keyHandle': keyHandle
+                }
                 self.current_user = username
         return response
     
     def check_authentication(self, params):
-        response = {'response': 'Signature unverified'}
+        response = {'Error': 'Signature unverified'}
         signature = params['signature']
         counter = params['counter']
         publicKey = self.users[self.current_user]['u2f']['publicKey']

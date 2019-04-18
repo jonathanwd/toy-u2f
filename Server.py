@@ -12,7 +12,6 @@ class Server:
         while True:
             response = response + connection.recv(4096).decode()
             break
-        print(response)
         return response
 
     def listen(self):

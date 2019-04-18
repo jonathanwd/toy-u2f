@@ -92,6 +92,9 @@ class RelyingParty(Server):
         response = {'Error': 'Signature unverified'}
         signature = params['signature']
         counter = params['counter']
+        old_counter = publicKey = self.users[self.current_user]['u2f']['counter']
+        if counter < old_counter:
+            return {'Error': 'Unexpected counter value'}
         publicKey = self.users[self.current_user]['u2f']['publicKey']
         toSign = OrderedDict([
             ('appID', self.webname),

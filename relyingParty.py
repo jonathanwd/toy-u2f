@@ -5,21 +5,33 @@ from Server import Server
 from collections import OrderedDict 
 
 class RelyingParty(Server):
-    def __init__(self):
+    def __init__(self, webname, port):
         Server.__init__(self)
-        self.server_port = 23457
+        self.server_port = port
         self.commands = {
             "party_request_registration": self.request_registration,
             "party_store_credential": self.store_credential,
             "party_request_authentication": self.request_authentication,
             "party_check_authentication": self.check_authentication,
+            "party_sign_up": self.sign_up,
         }
-        self.webname = "example.com"
+        self.webname = webname
         self.users = {
             "steve": {
-                "password": "not_secure",
+                "password": "not_secure"
             }
         }
+
+    def sign_up(self, params):
+        username = params['username']
+        password = params['password']
+        if username in self.users:
+            return {'response': 'User already exists'}
+        else:
+            info = {"password": password}
+            self.users[username] = info
+            msg = username + ' signed up successfully'
+            return {'response': msg}
 
     def request_registration(self, params):
         username = params['username']
@@ -88,5 +100,5 @@ class RelyingParty(Server):
         self.current_user = -1
         return response       
 
-r = RelyingParty()
+r = RelyingParty("example.com", 23457)
 r.listen()

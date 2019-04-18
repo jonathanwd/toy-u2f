@@ -30,7 +30,8 @@ class Authenticator(Server):
         print("Request received to make new credential with the following data:")
         print("\tappID: ", appID)
         print("\tchallenge: ", challenge)
-        # self.test_user_presence()
+        if not self.test_user_presence():
+            return response
         key, nonce = ccrypto.new_credential(appID)
         mac = ccrypto.generate_mac(appID, key)
         publicKey = key.public_key().export_key(format='PEM')
@@ -58,6 +59,8 @@ class Authenticator(Server):
         print("Request received to make authenticate with the following data:")
         print("\tappID: ", appID)
         print("\tchallenge: ", challenge)
+        if not self.test_user_presence():
+            return response
         key = ccrypto.credential_from_nonce(appID, keyHandle['nonce'])
         mac = ccrypto.generate_mac(appID, key)
         if mac != keyHandle['mac']:

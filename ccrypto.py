@@ -14,18 +14,20 @@ def new_credential(appID):
     msg = appID + str(nonce)
     hmac_object = hmac.new(device_secret_key, msg.encode(), hashlib.sha256)
     digest = hmac_object.digest()
-    key = ECC.construct(curve='P-256', d=int.from_bytes(digest, byteorder='big'))
-    return key, nonce
+    return digest, nonce
 
 def credential_from_nonce(appID, nonce):
     msg = appID + str(nonce)
     hmac_object = hmac.new(device_secret_key, msg.encode(), hashlib.sha256)
     digest = hmac_object.digest()
+    return digest
+
+def key_from_digest(digest):
     key = ECC.construct(curve='P-256', d=int.from_bytes(digest, byteorder='big'))
     return key
 
-def generate_mac(appID, key):
-    msg = appID + key.export_key(format='PEM')
+def generate_mac(appID, digest):
+    msg = appID + str(digest)
     hmac_object = hmac.new(device_secret_key, msg.encode(), hashlib.sha256)
     digest = hmac_object.digest()
     return digest

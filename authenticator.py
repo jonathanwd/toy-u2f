@@ -32,13 +32,14 @@ class Authenticator(Server):
         print("\tchallenge: ", challenge)
         if not self.test_user_presence():
             return {'Error': 'User presense failed'}
-        key, nonce = ccrypto.new_credential(appID)
-        mac = ccrypto.generate_mac(appID, key)
+        digest, nonce = ccrypto.new_credential(appID)
+        mac = ccrypto.generate_mac(appID, digest)
+        key = ccrypto.key_from_digest(digest)
         publicKey = key.public_key().export_key(format='PEM')
-        keyHandle = {
-            'nonce': nonce,
-            'mac': mac
-        }
+        keyHandle = OrderedDict([
+            ('nonce', nonce),
+            ('mac', mac)
+        ])
         toSign = OrderedDict([
             ('appID', appID),
             ('challenge', challenge),
@@ -61,8 +62,9 @@ class Authenticator(Server):
         print("\tchallenge: ", challenge)
         if not self.test_user_presence():
             return {'Error': 'User presense failed'}
-        key = ccrypto.credential_from_nonce(appID, keyHandle['nonce'])
-        mac = ccrypto.generate_mac(appID, key)
+        digest = ccrypto.credential_from_nonce(appID, keyHandle['nonce'])
+        mac = ccrypto.generate_mac(appID, digest)
+        key = ccrypto.key_from_digest(digest)
         if mac != keyHandle['mac']:
             print("keyHandle hash does not match.")
         else:

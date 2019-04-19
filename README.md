@@ -4,7 +4,7 @@ This is a toy U2F example. It is composed of three main parts
 * The FIDO Client (i.e. the browser) 
 * The Relying Party (i.e. the web service)
 
-The three parts should be run in three different windows. I have built a simple TUI to simulate interactions between the user and the browser.
+The three parts should be run in three different windows. I built a simple TUI (ui.py) to simulate interactions between the user and the browser.
 ```
 python3 authenticator.py
 ```
